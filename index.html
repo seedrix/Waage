@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+   
+</head>
+<body>
+
+
+<div style="clear: both">
+    <h1 style="float: left" id="weight">0,0</h1>
+    <h4 style="float: left">g</h4>
+</div>
+
+
+    <script src="/socket.io/socket.io.js"></script>
+<script>
+    var socket = io.connect();
+    socket.on('showWeight', function (weight) {
+        console.log("weight: "+weight);
+        document.getElementById("weight").innerHTML = weight;
+       
+    });
+</script>
+
+</body>
+</html>

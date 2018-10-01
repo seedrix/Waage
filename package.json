@@ -1,0 +1,17 @@
+{
+  "name": "waage",
+  "version": "1.0.0",
+  "description": "drink game server",
+  "main": "server.js",
+  "dependencies": {
+    "hx711": "^0.3.0",
+    "python-shell": "^1.0.4",
+    "socket.io": "^2.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
