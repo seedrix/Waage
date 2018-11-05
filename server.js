@@ -1,7 +1,7 @@
 'use strict';
 
 var display = require('./display.js');
-var app = require('http').createServer(handler)
+var app = require('http').createServer(handler);
 var io = require('socket.io')(app);
 var fs = require('fs');
 var scale = require('./nodehx711.js');
@@ -37,8 +37,8 @@ function showWeight(weight) {
 
 var checkWeightIntervalFunction = function () {
 	//read weight	
-	var weight = scale.getWeight()
-	showWeight(weight)
+	var weight = scale.getWeight();
+	showWeight(weight);
 	if (weight < 4 && weight > 4) {
 		//hardware.setLedState(0);
 	}
@@ -71,6 +71,10 @@ function tare() {
 }
 
 //startInterval();
-hardware.buttonCallback = tare;
+hardware.buttonCallback = function (event) {
+	if(event === hardware.buttonEvent.RIGHT_PRESS){
+		tare();
+	}
+};
 
 scale.newWeightCallback = checkWeightIntervalFunction;
