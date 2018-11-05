@@ -9,7 +9,7 @@ def cleanAndExit():
    # print "Bye!"
     sys.exit()
 
-hx = HX711(23, 24)
+hx = HX711(6, 13)
 
 # I've found out that, for some reason, the order of the bytes is not always the same between versions of python, numpy and the hx711 itself.
 # Still need to figure out why does it change.
@@ -33,9 +33,10 @@ hx.tare()
 
 while True:
     try:       	
-        val = hx.get_weight(8)
+        val = hx.get_weight(1)
         print(val) 
-        sys.stdout.flush()      
+        sys.stdout.flush()
+        #time.sleep(0.1)      
 
         
     except (KeyboardInterrupt, SystemExit):

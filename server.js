@@ -1,5 +1,6 @@
 'use strict';
 
+var display = require('./display.js');
 var app = require('http').createServer(handler)
 var io = require('socket.io')(app);
 var fs = require('fs');
@@ -7,7 +8,7 @@ var scale = require('./nodehx711.js');
 var hardware = require('./hardware.js');
 
 
-app.listen(8080);
+app.listen(80);
 
 function handler(req, res) {
 	fs.readFile(__dirname + '/index.html',
@@ -30,6 +31,7 @@ io.on('connection', function (socket) {
 });
 
 function showWeight(weight) {
+	display.print(String(Math.round(weight)));
 	io.emit("showWeight", Math.round(weight));
 }
 
@@ -38,12 +40,13 @@ var checkWeightIntervalFunction = function () {
 	var weight = scale.getWeight()
 	showWeight(weight)
 	if (weight < 4 && weight > 4) {
-		hardware.setLedState(0);
+		//hardware.setLedState(0);
 	}
 
 
 };
 //function run periodicly
+/*
 var interval = null;
 
 function startInterval() {
@@ -60,14 +63,14 @@ function stopInterval() {
 		interval = null;
 	}
 }
+*/
 
 
 function tare() {
 	scale.tare();
 }
 
-hardware.buttonPushed = tare;
+//startInterval();
+hardware.buttonCallback = tare;
 
-// tare();
-startInterval()
-hardware.setLedState(1);
+scale.newWeightCallback = checkWeightIntervalFunction;
