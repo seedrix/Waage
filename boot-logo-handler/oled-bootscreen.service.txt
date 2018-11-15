@@ -1,0 +1,17 @@
+[Unit]
+Description=Shows the bootlogo on the oled screen
+DefaultDependencies=no
+
+Before=networking.service 
+
+Wants=local-fs.target
+After=local-fs.target
+
+[Service]
+Type=simple
+RemainAfterExit=yes
+User=root
+Group=root
+ExecStart=/sbin/oled-bootscreen
+[Install]
+WantedBy=waage-netconf.service
