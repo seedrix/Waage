@@ -1,0 +1,16 @@
+#######################################################################
+#### THIS FILE IS OVERWRITTEN EVERY BOOT, NOT EDIT IT 
+#### EDIT INSTEAT THE FILES IN 
+#### /etc/waage-netconf/accesspoint/ AND /etc/waage-netconf/client/
+#######################################################################
+
+
+# Localhost
+auto lo
+iface lo inet loopback
+
+# WLAN-Interface
+allow-hotplug wlan0
+iface wlan0 inet static
+address 192.168.1.1
+netmask 255.255.255.0

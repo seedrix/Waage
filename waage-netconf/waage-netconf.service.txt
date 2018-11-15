@@ -1,0 +1,20 @@
+[Unit]
+Description=Load network config based on hardware switch state
+DefaultDependencies=no
+
+Before=network-pre.target
+Wants=network-pre.target
+
+Wants=local-fs.target
+After=local-fs.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+User=root
+Group=root
+ExecStart=/etc/waage-netconf/configure.sh
+#ExecStop=/etc/waage-netconf/
+
+[Install]
+WantedBy=network.target

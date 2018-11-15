@@ -1,0 +1,14 @@
+#######################################################################
+#### THIS FILE IS OVERWRITTEN EVERY BOOT, NOT EDIT IT 
+#### EDIT INSTEAT THE FILES IN 
+#### /etc/waage-netconf/accesspoint/ AND /etc/waage-netconf/client/
+#######################################################################
+
+# Localhost
+auto lo
+iface lo inet loopback
+
+# WLAN-Interface
+allow-hotplug wlan0
+iface wlan0 inet manual
+    wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
