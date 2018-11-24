@@ -74,6 +74,10 @@ function tare() {
 hardware.buttonCallback = function (event) {
 	if(event === hardware.buttonEvent.RIGHT_PRESS){
 		tare();
+	}else if(event === hardware.buttonEvent.LEFT_PRESS){
+		io.emit("addToTable", true);
+	}else if(event === hardware.buttonEvent.BOTH_HOLD){
+		io.emit("resetTable", true);
 	}
 };
 

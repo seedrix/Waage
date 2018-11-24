@@ -7,19 +7,84 @@
 
 
 <div style="clear: both">
-    <h1 style="float: left" id="weight">0,0</h1>
-    <h4 style="float: left">g</h4>
+    <h1 style="margin-top: 0;font-size: 50vmin;float: left" id="weight">0,0</h1>
+    <h1 style="margin-top: 0;font-size: 50vmin;float: left"><sub>g</sub></h1>
 </div>
-
+<div id="metric_results">
+       
+    </div>
 
     <script src="/socket.io/socket.io.js"></script>
 <script>
+    var lastWeight = 0;
+
     var socket = io.connect();
     socket.on('showWeight', function (weight) {
         console.log("weight: "+weight);
         document.getElementById("weight").innerHTML = weight;
-       
+        lastWeight = Math.abs(weight);
     });
+    socket.on('addToTable',function(value){
+        addWeight();
+    });
+    socket.on('resetTable',function(value){
+        location.reload();
+    });
+
+    var stock = new Array(); 
+    var lastPlayer = 0;
+
+    function addWeight(){
+        lastPlayer = stock.length;
+        stock.push([stock.length, lastWeight]);
+        stock.sort(sortNumber);
+        updateTable();
+    }
+
+    function sortNumber(a,b) {
+        return  b[1] - a[1];
+    }
+
+    function updateTable() {
+    var myTableDiv = document.getElementById("metric_results")
+    myTableDiv.innerHTML = "";
+    var table = document.createElement('TABLE')
+    var tableBody = document.createElement('TBODY')
+
+    table.border = '1'
+    table.appendChild(tableBody);
+
+    var heading = new Array();
+    heading[0] = "Sp. Nr."
+    heading[1] = "Gewicht"
+
+
+    //TABLE COLUMNS
+    var tr = document.createElement('TR');
+    tableBody.appendChild(tr);
+    for (i = 0; i < heading.length; i++) {
+        var th = document.createElement('TH')
+        th.width = '75';
+        th.appendChild(document.createTextNode(heading[i]));
+        tr.appendChild(th);
+    }
+
+    //TABLE ROWS
+    for (i = 0; i < stock.length; i++) {
+        var tr = document.createElement('TR');
+        var player = stock[i][0];
+        for (j = 0; j < stock[i].length; j++) {
+            var td = document.createElement('TD')
+            td.appendChild(document.createTextNode(stock[i][j]));
+            if(player == lastPlayer){
+                tr.style.backgroundColor = '#85ff7d';
+            }
+            tr.appendChild(td)
+        }
+        tableBody.appendChild(tr);
+    }  
+    myTableDiv.appendChild(table)
+}
 </script>
 
 </body>
