@@ -1,90 +1,136 @@
 <!DOCTYPE html>
 <html>
 <head>
-   
+    <style>
+        .largeFont {
+            font-size: 10vmin;
+        }
+    </style>
 </head>
 <body>
 
 
 <div style="clear: both">
     <h1 style="margin-top: 0;font-size: 50vmin;float: left" id="weight">0,0</h1>
-    <h1 style="margin-top: 0;font-size: 50vmin;float: left"><sub>g</sub></h1>
-</div>
-<div id="metric_results">
-       
+    <div id="metric_results" style="float: right">
+
     </div>
+    <h1 style="margin-top: 0;font-size: 30vmin;float: right"><sub>g</sub></h1>
+</div>
+<div id="button"></div>
 
-    <script src="/socket.io/socket.io.js"></script>
+<script src="/socket.io/socket.io.js"></script>
 <script>
+    const maxWeight = 100;
+
+    //debug mode if the file is locally opened
+    const DEBUG = window.location.protocol === "file:";
+
+    if(DEBUG){
+        var button = document.getElementById("button");
+        button.innerHTML= "<input type=\"button\" id=\"create\" value=\"Add Value\" onclick=\"Javascript:addWeight()\">";
+    }
+
+    var targetWeight = -1;
     var lastWeight = 0;
-
-    var socket = io.connect();
-    socket.on('showWeight', function (weight) {
-        console.log("weight: "+weight);
-        document.getElementById("weight").innerHTML = weight;
-        lastWeight = Math.abs(weight);
-    });
-    socket.on('addToTable',function(value){
-        addWeight();
-    });
-    socket.on('resetTable',function(value){
-        location.reload();
-    });
-
-    var stock = new Array(); 
+    var lowestWeight = maxWeight;
+    if(!DEBUG) {
+        var socket = io.connect();
+        socket.on('showWeight', function (weight) {
+            console.log("weight: " + weight);
+            document.getElementById("weight").innerHTML = weight;
+            lastWeight = Math.abs(weight);
+        });
+        socket.on('addToTable', function (value) {
+            addWeight();
+        });
+        socket.on('resetTable', function (value) {
+            location.reload();
+        });
+    }
+    var stock = new Array();
     var lastPlayer = 0;
 
-    function addWeight(){
+    function addWeight() {
+        if(DEBUG) {
+            lastWeight = Math.round(Math.random() * 70 + 20);
+        }
         lastPlayer = stock.length;
         stock.push([stock.length, lastWeight]);
         stock.sort(sortNumber);
+        if (lastPlayer === 0) {
+            targetWeight = lastWeight;
+        }
+        if (lastWeight < lowestWeight) {
+            lowestWeight = lastWeight;
+        }
         updateTable();
     }
 
-    function sortNumber(a,b) {
-        return  b[1] - a[1];
+    function sortNumber(a, b) {
+        if (b[1] === a[1]) {
+            //sort by player id if weight is equal
+            return b[0] - a[0];
+        }
+        return b[1] - a[1];
     }
 
     function updateTable() {
-    var myTableDiv = document.getElementById("metric_results")
-    myTableDiv.innerHTML = "";
-    var table = document.createElement('TABLE')
-    var tableBody = document.createElement('TBODY')
+        var myTableDiv = document.getElementById("metric_results");
+        myTableDiv.innerHTML = "";
+        var table = document.createElement('TABLE');
+        var tableBody = document.createElement('TBODY');
 
-    table.border = '1'
-    table.appendChild(tableBody);
+        table.border = '1';
+        table.appendChild(tableBody);
 
-    var heading = new Array();
-    heading[0] = "Sp. Nr."
-    heading[1] = "Gewicht"
+        var heading = new Array();
+        heading[0] = "Sp. Nr.";
+        heading[1] = "Gewicht";
 
 
-    //TABLE COLUMNS
-    var tr = document.createElement('TR');
-    tableBody.appendChild(tr);
-    for (i = 0; i < heading.length; i++) {
-        var th = document.createElement('TH')
-        th.width = '75';
-        th.appendChild(document.createTextNode(heading[i]));
-        tr.appendChild(th);
-    }
-
-    //TABLE ROWS
-    for (i = 0; i < stock.length; i++) {
+        //TABLE COLUMNS
         var tr = document.createElement('TR');
-        var player = stock[i][0];
-        for (j = 0; j < stock[i].length; j++) {
-            var td = document.createElement('TD')
-            td.appendChild(document.createTextNode(stock[i][j]));
-            if(player == lastPlayer){
-                tr.style.backgroundColor = '#85ff7d';
-            }
-            tr.appendChild(td)
-        }
         tableBody.appendChild(tr);
-    }  
-    myTableDiv.appendChild(table)
-}
+        for (i = 0; i < heading.length; i++) {
+            var th = document.createElement('TH');
+            th.width = '75';
+            th.appendChild(document.createTextNode(heading[i]));
+            tr.appendChild(th);
+        }
+
+        //TABLE ROWS
+        for (i = 0; i < stock.length; i++) {
+            var tr = document.createElement('TR');
+            var player = stock[i][0];
+            var weight = stock[i][1];
+            if (player === lastPlayer) {
+                tr.style.backgroundColor = '#00ff01';
+            }
+            for (j = 0; j < stock[i].length; j++) {
+                var td = document.createElement('TD')
+                td.appendChild(document.createTextNode(stock[i][j]));
+                if ((i === 0 || i === stock.length - 1 || player === 0)) {
+                    td.className = "largeFont";
+                }
+                if (lowestWeight === targetWeight) {
+                    //highlight player with highest weight
+                    if (j === 1 && i === 0 && stock.length >1) {
+                        td.style.backgroundColor = '#ffa59e';
+                    }
+                } else {
+                    //highlight all player below target
+                    if (j === 1 && weight < targetWeight) {
+                        td.style.backgroundColor = '#ffa59e';
+                    }
+                }
+
+                tr.appendChild(td)
+            }
+            tableBody.appendChild(tr);
+        }
+        myTableDiv.appendChild(table)
+    }
 </script>
 
 </body>
