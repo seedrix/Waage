@@ -107,26 +107,30 @@
             if (player === lastPlayer) {
                 tr.style.backgroundColor = '#00ff01';
             }
-            for (j = 0; j < stock[i].length; j++) {
-                var td = document.createElement('TD')
-                td.appendChild(document.createTextNode(stock[i][j]));
-                if ((i === 0 || i === stock.length - 1 || player === 0)) {
-                    td.className = "largeFont";
-                }
-                if (lowestWeight === targetWeight) {
-                    //highlight player with highest weight
-                    if (j === 1 && i === 0 && stock.length >1) {
-                        td.style.backgroundColor = '#ffa59e';
-                    }
-                } else {
-                    //highlight all player below target
-                    if (j === 1 && weight < targetWeight) {
-                        td.style.backgroundColor = '#ffa59e';
-                    }
-                }
-
-                tr.appendChild(td)
+            if ((i === 0 || i === stock.length - 1 || player === 0)) {
+                tr.className = "largeFont";
             }
+            // add player
+            var td = document.createElement('TD');
+            td.appendChild(document.createTextNode(player));
+            tr.appendChild(td);
+
+            //add weight
+            var td = document.createElement('TD');
+            td.appendChild(document.createTextNode(weight));
+            if (lowestWeight === targetWeight) {
+                //highlight player with highest weight
+                if (i === 0 && stock.length >1) {
+                    td.style.backgroundColor = '#ffa59e';
+                }
+            } else {
+                //highlight all player below target
+                if (weight < targetWeight) {
+                    td.style.backgroundColor = '#ffa59e';
+                }
+            }
+            tr.appendChild(td);
+
             tableBody.appendChild(tr);
         }
         myTableDiv.appendChild(table)
